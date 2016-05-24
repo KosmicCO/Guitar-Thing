@@ -9,5 +9,64 @@
  * @author glangsdorf18
  */
 public class RingBuffer {
-    
+    private int size, first, last;
+    private double[] lod;
+    public RingBuffer(int capacity){
+        lod=new double[capacity];
+        int index=0,count=0;
+        boolean b=false;
+        while(!b && count<capacity){
+            if(lod[count]!=0.0){
+                first=count;
+                b=true;
+            }
+            count++;
+        }
+        
+        for (int i = 0; i < capacity; i++) {
+            if(lod[i]!=0.0)
+                index=i;
+        }
+        if(index+1<capacity)
+            last=index+1;
+        else
+            last=0;
+    }
+    public int length(){return lod.length;}
+    public int size(){ return size;}
+    public boolean isEmpty(){
+        if(size==0)
+            return true;
+        return false;
+    }
+    public boolean isFull(){
+        if(size==lod.length)
+            return true;
+        return false;
+    }
+    public void enqueue(double x){
+        if(isFull())
+            throw new RuntimeException("The ring buffer is full");
+        lod[last]=x;
+        size++;
+        last++;
+        if(last==lod.length)
+            last=0;
+    }
+    public double dequeue(){
+        if(isEmpty())
+            throw new RuntimeException("The ring buffer is empty");
+        double d=lod[first];
+        lod[first]=0.0;
+        size--;
+        first++;
+        if(first==lod.length)
+            first=0;
+        return d;
+    }
+    public double peek(){
+        return lod[first];
+    }
+
+
 }
