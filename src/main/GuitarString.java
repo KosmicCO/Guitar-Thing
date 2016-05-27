@@ -2,51 +2,60 @@ package main;
 
 import engine.Signal;
 
-
-
-
 public class GuitarString extends Signal<Boolean> {
 
-    private int count=0;
-    
+    private int count = 0;
+
     private RingBuffer buffer; // ring buffer
     // YOUR OTHER INSTANCE VARIABLES HERE
 
     // create a guitar string of the given frequency
     public GuitarString(double frequency) {
-        
+
         super(false);
-       buffer=new RingBuffer((int)(44100/frequency));
-       filter(x -> x == true).onEvent(() -> this.pluck());
+        buffer = new RingBuffer((int) (44100 / frequency));
+        filter(x -> x == true).onEvent(() -> {
+            
+            buffer.enqueue(100);
+            this.tic();
+        });
     }
 
     // create a guitar string with size & initial values given by the array
     public GuitarString(double[] init) {
-        
+
         super(false);
-        buffer=new RingBuffer(init.length);
+
+        buffer = new RingBuffer(init.length);
         for (int i = 0; i < init.length; i++) {
             buffer.enqueue(init[i]);
         }
-        
-        filter(x -> x == true).onEvent(() -> this.pluck());
+
+        filter(x -> x).onEvent(() -> {
+
+            tic();
+        });
     }
 
     // pluck the guitar string by replacing the buffer with white noise
-    public final void pluck() {
-        for(int i=buffer.size();i>0;i--){
+    public void pluck() {
+
+        for (int i = buffer.size(); i > 0; i--) {
             buffer.dequeue();
         }
         for (int i = 0; i < buffer.length(); i++) {
-            buffer.enqueue(Math.random()-.5);
+            buffer.enqueue(Math.random() - .5);
         }
     }
 
     // advance the simulation one time step
     public void tic() {
+
         double a1 = buffer.dequeue();
         double a2 = buffer.peek();
-        buffer.enqueue((a1+a2) * .994);
+        System.out.println(a2);
+        StdAudio.play(a2);
+        buffer.enqueue((a1 + a2) * .994);
         count++;
     }
 
@@ -73,4 +82,3 @@ public class GuitarString extends Signal<Boolean> {
     }
 
 }
-

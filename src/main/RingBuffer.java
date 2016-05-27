@@ -11,8 +11,8 @@ package main;
  * @author glangsdorf18
  */
 public class RingBuffer {
-    private int size, first, last;
-    private double[] lod;
+    private int size, first, last = 0;
+    private double[] lod = new double[0];
     public RingBuffer(int capacity){
         lod=new double[capacity];
     }
@@ -38,8 +38,7 @@ public class RingBuffer {
             last=0;
     }
     public double dequeue(){
-        if(isEmpty())
-            throw new RuntimeException("The ring buffer is empty");
+        if(!isEmpty()){
         double d=lod[first];
         lod[first]=0.0;
         size--;
@@ -47,6 +46,9 @@ public class RingBuffer {
         if(first==lod.length)
             first=0;
         return d;
+        }
+        
+        return 0;
     }
     public double peek(){
         return lod[first];
