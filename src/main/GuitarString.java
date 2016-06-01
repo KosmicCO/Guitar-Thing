@@ -2,6 +2,7 @@ package main;
 
 import engine.Core;
 import engine.Signal;
+import static main.StdAudio.play;
 
 public class GuitarString extends Signal<Boolean> {
 
@@ -18,9 +19,8 @@ public class GuitarString extends Signal<Boolean> {
 
         filter(x -> x).onEvent(() -> {
 
-            for (int i = 0; i <= StdAudio.SAMPLE_RATE / 5; i++) {
-                StdAudio.play(0.5 * Math.sin(2 * Math.PI * frequency * i / StdAudio.SAMPLE_RATE));
-            }
+              pluck();
+              double sample = sample();
         });
     }
     // create a guitar string with size & initial values given by the array
