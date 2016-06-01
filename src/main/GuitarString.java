@@ -1,5 +1,6 @@
 package main;
 
+import engine.Core;
 import engine.Signal;
 
 public class GuitarString extends Signal<Boolean> {
@@ -14,14 +15,16 @@ public class GuitarString extends Signal<Boolean> {
 
         super(false);
         buffer = new RingBuffer((int) (44100 / frequency));
-        filter(x -> x == true).onEvent(() -> {
-            
-            buffer.enqueue(100);
-            this.tic();
+
+        filter(x -> x).onEvent(() -> {
+
+            for (int i = 0; i <= StdAudio.SAMPLE_RATE / 5; i++) {
+                StdAudio.play(0.5 * Math.sin(2 * Math.PI * frequency * i / StdAudio.SAMPLE_RATE));
+            }
         });
     }
-
     // create a guitar string with size & initial values given by the array
+
     public GuitarString(double[] init) {
 
         super(false);
@@ -33,7 +36,6 @@ public class GuitarString extends Signal<Boolean> {
 
         filter(x -> x).onEvent(() -> {
 
-            tic();
         });
     }
 
@@ -41,7 +43,6 @@ public class GuitarString extends Signal<Boolean> {
     public void pluck() {
 
         for (int i = buffer.size(); i > 0; i--) {
-            buffer.dequeue();
         }
         for (int i = 0; i < buffer.length(); i++) {
             buffer.enqueue(Math.random() - .5);

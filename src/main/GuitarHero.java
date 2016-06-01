@@ -30,7 +30,7 @@ public class GuitarHero {
         
         for (int i = 0; i < 37; i++) {
 
-            GuitarString s = new GuitarString(440. * Math.pow(2, (i - 24) / 12));
+            GuitarString s = new GuitarString(440. + ((i - 3) * 110));//Math.pow(2, (i - 24) / 12));
             conv.put(cc[i], s);
         }
         
